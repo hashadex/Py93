@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="assets/fonts/px-sans-nouveaux/px-sans-nouveaux.css">
+        <script
+            src="https://code.jquery.com/jquery-3.5.0.min.js"
+            integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+            crossorigin="anonymous">
+        </script>
+        <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous">
+        </script>
+        <script>
+            var status = [false, false, false];
+            if (window.location !== window.parent.location) {
+                /* Seems like we are inside an iframe!
+                That means everything's okay. */
+                console.log('[Installer] [+] Seems like installer is running inside an iframe.');
+                status[0] = true;
+                if (window.parent.location.host !== "windows93.net") {
+                    // we're not on windows93.net
+                    console.log(`[Installer] [-] Seems like installer isn't running on windows93.net.\nwindow.parent.location.host: ${window.parent.location.host}`);
+                    alert('[Installer] Py93 installer detected that it isn\'t running on windows93.net.');
+                    status[1] = false;
+                } else {
+                    // we're on windows93.net and inside an iframe
+                    status[1] = true;
+                    // trying to connect
+                    window.parent.onmessage = function(event) {
+                        let obj = event.data
+                        if (obj == undefined || obj.type == undefined) {
+                            console.log('[Installer] [!] Got an empty mobj.')
+                        }
+                    }
+                }
+            } else {
+                /* Seems like we aren't inside an iframe!
+                That's bad. */
+                console.warn('[Installer] [!] Seems like installer isn\'t running inside an iframe!');
+                alert('[Installer] Py93 installer detected that it isn\'t running inside an <iframe>.\nIf you are on Windows93.net and you are running installer inside an iframe (inside a window), ignore this message.');
+                status[0] = false;
+            }
+        </script>
+        <style>
+            body {
+                font-family: "px-sans-nouveaux";
+            }
+            div.header h1 {
+                font-weight: bold;
+            }
+            div.header {
+                position: absolute;
+                left: 20px;
+                top: -15px;
+            }
+            div.main {
+                position: relative;
+                left: 10px;
+                top: 55px;
+                font-size: small;
+            }
+            /* div.status {
+                position: relative;
+                top: 120px;
+                left: 20px;
+            } */
+            .status p {
+                font-weight: bold;
+                font-size: small;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Py93 v.0.1pr Installer</h1>
+        </div>
+        <div class="main">
+            <p>
+                Welcome to Py93 v.0.1pr Installer!<br>
+                This will install Py93 on your Windows93 computer.
+            </p>
+            <div class="status">
+                <p id="iframe"></p>
+                <p id="w93"></p>
+                <p id="conn"></p>
+            </div>
+            <script>
+                if (status[0] == true) {
+                    document.getElementById("iframe").style.fontWeight = "bold"
+                    document.getElementById("iframe").style.color = "#00ff00"
+                    document.getElementById("iframe").innerHTML = "Installer is running inside an iframe."
+                } else {
+                    document.getElementById("iframe").style.fontWeight = "bold"
+                    document.getElementById("iframe").style.color = "#ffa500"
+                    document.getElementById("iframe").innerHTML = "Installer is not running inside an iframe."
+                }
+                if (status[1] == true) {
+                    document.getElementById("w93").style.fontWeight = "bold"
+                    document.getElementById("w93").style.color = "#00ff00"
+                    document.getElementById("w93").innerHTML = "Installer is running on windows93.net."
+                } else {
+                    document.getElementById("w93").style.fontWeight = "bold"
+                    document.getElementById("w93").style.color = "#ff0000"
+                    document.getElementById("w93").innerHTML = "Installer is not running on windows93.net."
+                }
+            </script>
+        </div>
+    </body>
+</html>
