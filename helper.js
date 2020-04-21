@@ -1,5 +1,7 @@
 // This script should be loaded at boot.
 // Put it in /a/boot/
+// TODO: Improve code
+// TODO: Minify the code a little bit, but it should be readable
 console.log('[Py93Helper] Started execution');
 le._apps.py93 = {
     exec: function() {
@@ -7,9 +9,91 @@ le._apps.py93 = {
         if (args[0] == "shell" || args[0] == "s") {
             $fs.utils.getMenuOpenWith('/a/Py93/brython/console.html')[0].action();
         } else if (args[0] == "help" || args[0] == "h") {
-            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell')
+            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell');
+        } else if (args[0] == "compile" || args[0] == "c") {
+            if (
+                this.arg.command == "py93 compile" ||
+                this.arg.command == "py93 compile " ||
+                this.arg.command == "py93 c" ||
+                this.arg.command == "py93 c " ||
+                this.arg.command == "py93 compile help" ||
+                this.arg.command == "py93 compile h" ||
+                this.arg.command == "py93 c help" ||
+                this.arg.command == "py93 c h"
+            ) {
+                $log('Py93 Menu: py93compile: usage:\npy93 [compile or c] [?help or h] [filepath] [?--name NAME]\nUse "help" or "h" to see this help message.\nfilepath - path to .py file that need to be compiled\n--name NAME - output file name. Example: "py93 c /a/w93.py --name windows93" => file w93.py in /a/ has been compiled and saved as windows93.html. (If there\'s no --name option, the target file name will be the same as the source.)\nWorking command example: py93 c /a/w93.py --name windows93');
+            } else {
+                let attrs = this.arg.command.split(' ');
+                var compFile;
+                compFile = attrs[2];
+                if (compFile[0] == '/') compFile = compFile.substr(1);
+                if (compFile[0] == 'a' && $fs.utils.getExt(compFile) == 'py') {
+                    success = true;
+                } else {
+                    success = false;
+                    if (compFile[0] == 'c') {
+                        $log.red('py93compile: compiler error: can\'t get file from /c/');
+                    }
+                    if ($fs.utils.exist(compFile) == false) {
+                        $log.red('py93compile: compiler error: file does not exist');
+                    }
+                    if (!($fs.utils.getExt(compFile) == 'py')) {
+                        $log.red('py93compile: compiler error: only .py files supported');
+                    }
+                    if (!(compFile[0] == 'c') && !($fs.utils.exist(compFile) == false) && !(!($fs.utils.getExt(compFile) == 'py'))) {
+                        $log.red('py93compile: compiler error: can\'t get file\nDebug information: 1, unknown reason');
+                    }
+                }
+                if (success) {
+                    compFile = compFile.substr(2);
+                    localforage.getItem(compFile).then(value => {
+                        $store.set('Py93/.temp/temp.txt', value);
+                    });
+                    $log('Waiting for promise to settle...');
+                    setTimeout(() => {}, 1000); // waiting, so the promise will got settled and then() executed
+                    var outConts = $store.getRaw('Py93/.temp/temp.txt');
+                    if (outConts == 'null') {
+                        $log.red('py93compile: compiler error: file not found\nTrying to do what you tried to do again may solve this problem.');
+                    } else if (outConts == null) {
+                        $log.red('py93compile: compiler error: can\'t get file\nDebug information: 2, outConts is null\nTrying to do what you tried to do again may solve this problem.');
+                    } else if (outConts == undefined) {
+                        $log.red('py93compile: compiler error: can\'t get file\nDebug information: 3, outConts is undefined');
+                    } else {
+                        $log('Started compiling...');
+                        var name = null;
+                        attrs.forEach((attr) => {
+                            if (attr == '--name') {
+                                $log('Detected --name option'); // i call these attributes
+                                let nameid = attrs.indexOf("--name");
+                                name = attrs[nameid + 1]; // it should be next
+                            }
+                        });
+                        var spl = outConts.split('\n');
+                        var tabs = '            ';
+                        var tabbed = [];
+                        spl.forEach((element) => {
+                            if (typeof(element) == 'string') {
+                                tabbed.push(tabs + element);
+                            }
+                        });
+                        tabbedStr = tabbed.join('\n');
+                        var date = new Date();
+                        var htmlfile = `<!-- \n    This HTML page was generated by Py93 compiler. \n    Generation date: ` + date.toString() + `\n--> \n<!DOCTYPE html> \n<html> \n    <head> \n        <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython.min.js"></script> \n        <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython_stdlib.js"></script> \n        <script type="text/python3" id="r_Py93__script_first"> \n            # PLEASE DO NOT CHANGE OR DELETE THIS CODE. \n            import sys, browser \n            # Overwriting sys.stdout.write so stdout output will go to the textarea \n            class r_Py93__class_WriteStdout: \n                def __init__(self): \n                    self.console = browser.document["console"] \n                def write(self, text): \n                    self.console.text += text \n            sys.stdout = r_Py93__class_WriteStdout() \n            del r_Py93__class_WriteStdout \n            # Doing the same with sys.stderr \n            class r_Py93__class_WriteStderr: \n                def __init__(self): \n                    self.console = browser.document["console"] \n                def write(self, text): \n                    self.console.text += text \n            sys.stderr = r_Py93__class_WriteStderr() \n            del r_Py93__class_WriteStderr \n        </script> \n        <style> \n            textarea#console { \n                position: absolute; \n                width: 100%; \n                height: 100%; \n                resize: none; \n                top: 0px; \n                right: 0px; \n                left: 0px; \n                bottom: 0px; \n                background-color: #1d1d1d; \n                color: #ffffff; \n            } \n        </style> \n    </head> \n    <body onload="brython(1)"> \n        <textarea id="console" spellcheck="false"></textarea> \n        <script type="text/python3" id="r_Py93__script_main"> \n` + tabbedStr + `\n        </script> \n    </body> \n</html>`;
+                        var filename;
+                        if (!(name == null)) {
+                            filename = name + '.html';
+                        } else {
+                            filename = $fs.utils.getName(compFile);
+                            filename = $fs.utils.replaceExt(filename, "html");
+                        }
+                        var compNameFin = 'Py93/compiled/'+filename;
+                        localforage.setItem(compNameFin, htmlfile);
+                        $log.green('Finished compilation.\nCompiled file path: /a/' + compNameFin + '\nWrite "$file.delete(\'/a/Py93/.temp/temp.txt\'); $explorer.refresh()" to the terminal to clear temporary files and make compiled file visible.'); // FIXME: Need to fix a bug when using $explorer.refresh() in the script does nothing // FIXME: Need to fix a bug when $file.delete(*args*) in the script does nothing
+                    }
+                }
+            }
         } else {
-            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell')
+            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.');
         }
     },
     hascli: true,

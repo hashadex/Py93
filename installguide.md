@@ -50,8 +50,8 @@ Reboot your Windows 93 PC.
 
 ### **Finished!**
 
-Now you can open `console.html` in `/Py93/brython` to open **Py93 Shell**.
+Now you can open `console.html` in `/Py93/brython` to open **Py93 Shell** or write `py93 c help` to see `py93compile` (Py93 Compiler) usage.
 
 Or you can move `.lnk42` file from `/Py93/lnk` to your desktop. You can open the shell using this shortcut.
 
-> *Last updated: April 20, 2020*
+> *Last updated: April 28, 2020*
