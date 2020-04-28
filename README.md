@@ -2,6 +2,8 @@
 
 Py93 is a Python 3 compiler and shell (based on [Brython](https://brython.info)) for [Windows 93](https://windows93.net/).
 
+![License: MPL-2.0](https://img.shields.io/badge/license-MPL--2.0-informational)
+
 <!--- code redactor (based on [CodeMirror](https://codemirror.net)),  -->
 
 <!---
