@@ -50,8 +50,10 @@ Reboot your Windows 93 PC.
 
 ### **Finished!**
 
-Now you can open `console.html` in `/Py93/brython` to open **Py93 Shell** or write `py93 c help` to see `py93compile` (Py93 Compiler) usage.
+Now you can open `console.html` in `/Py93/brython` to open **Py93 Shell** or write `py93 c help` in the Windows 93 terminal to see `py93compile` (Py93 Compiler) usage.
 
-Or you can move `.lnk42` file from `/Py93/lnk` to your desktop. You can open the shell using this shortcut.
+Also, don't forget to check out [Brython documentation](https://brython.info/static_doc/en/intro.html?lang=en)!
+Brython has it's own [`browser`](https://https://brython.info/static_doc/en/browser.html) package and some differences from Python.
+For example: built-in function `input()` in Python lets you to type your input right into the console, but in Brython `input()` uses JavaScript's `prompt()` function, and instead of normal Pythonic behavior `input()` opens a standart browser window with a prompt.
 
-> *Last updated: April 28, 2020*
+> *Last updated: April 30, 2020*
