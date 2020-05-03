@@ -12,9 +12,9 @@ Py93 is a Python 3 compiler and shell (based on [Brython](https://brython.info))
 To install Py93 to your Windows 93 computer, just create `Py93` folder in `/a/`, then paste this repository to `Py93` folder. See `installguide.md` for more detailed guide.
 -->
 ## Quick-start guide
-1. Clone this repository to your computer.
+1. Download release archive from the [releases page](https://github.com/hasha2982/Py93/releases) and extract it to your computer.
 2. Create `Py93` folder in `/a/`.
-3. Move the repository from your computer to `/a/Py93/`.
+3. Move the extracted archive from your computer to `/a/Py93/`.
 4. Move `helper.js` from `/a/Py93` to `/a/boot/`.
 5. Reboot.
 
@@ -63,4 +63,4 @@ py93 compile [filename]
 // py93compile have got more options, see py93compile help message for more
 ```
 
-> *Last updated: Apr 28, 2020*
+> *Last updated: May 3, 2020*

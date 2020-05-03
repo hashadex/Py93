@@ -6,6 +6,8 @@ This guide will tell you how to install Py93 to your Windows 93 PC.
 Create `Py93` folder in `/a/`.
 
 ## Step two
+Download release archive from the [releases page](https://github.com/hasha2982/Py93/releases) and extract it to your computer.
+<!---
 Copy this repository to your computer.
 
 **Git:**
@@ -23,10 +25,11 @@ git clone https://github.com/hasha2982/Py93.git
 **GitHub: (web)**
 * Go to the [root of this repository](https://github.com/hasha2982/Py93).
 * Click on the *Clone or download* button, then choose *Download ZIP*.
+-->
 
 ## Step three
 
-Drop cloned repository to Windows 93's `/a/` disk.
+Drop extracted archive to Windows 93's `/a/` disk.
 
 After that disk should look like that:
 ```
