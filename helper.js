@@ -63,9 +63,9 @@ le._apps.py93 = {
                             var name = null;
                             attrs.forEach((attr) => {
                                 if (attr == '--name') {
-                                    $log('Detected --name option'); // i call these attributes
+                                    $log('Detected --name option');
                                     let nameid = attrs.indexOf("--name");
-                                    name = attrs[nameid + 1]; // it should be next
+                                    name = attrs[nameid + 1];
                                 }
                             });
                             var spl = outConts.split('\n');
