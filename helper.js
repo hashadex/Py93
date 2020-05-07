@@ -7,7 +7,7 @@ le._apps.py93 = {
     exec: function() {
         var args = this.arg.arguments;
         if (args[0] == "shell" || args[0] == "s") {
-            $fs.utils.getMenuOpenWith('/a/Py93/brython/console.html')[0].action();
+            $fs.utils.getMenuOpenWith('/a/Py93/console.html')[0].action();
         } else if (args[0] == "help" || args[0] == "h") {
             $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.');
         } else if (args[0] == "compile" || args[0] == "c") {
