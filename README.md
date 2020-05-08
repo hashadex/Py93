@@ -76,4 +76,4 @@ py93 compile [filename]
 // py93compile have got more options, see py93compile help message for more
 ```
 
-> *Last updated: May 3, 2020*
+> *Last updated: May 8, 2020*
