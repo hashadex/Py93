@@ -21,7 +21,7 @@ le._apps.py93 = {
                 this.arg.command == "py93 c help" ||
                 this.arg.command == "py93 c h"
             ) {
-                $log('Py93 Menu: py93compile: usage:\npy93 [compile or c] [?help or h] [filepath] [?--name NAME] [--packages-ignore or -pi]\n===========================================================\nUse "help" or "h" to see this help message.\nfilepath - path to .py file that needs to be compiled\n--name NAME - output file name.\nExample: "py93 c /a/w93.py --name windows93" => file w93.py in /a/ has been compiled and saved as windows93.html.\n(If there\'s no --name option, the target file name will be the same as the source.)\n--packages-ignore or -pi - use these options if don\'t want to load packages from "packages" folder in the compiled file.\nWorking command example: py93 c /a/w93.py --name windows93');
+                $log('Py93 Menu: py93compile: usage:\npy93 [compile or c] [help or h] [filepath] [--name NAME] [--packages-ignore or -pi] [-o or --out OUTDIR]\n===========================================================\nUse "help" or "h" to see this help message.\nfilepath - path to .py file that needs to be compiled\n--name NAME - output file name.\nExample: "py93 c /a/w93.py --name windows93" => file w93.py in /a/ has been compiled and saved as windows93.html.\n(If there\'s no --name option, the target file name will be the same as the source.)\n--packages-ignore or -pi - use these options if don\'t want to load packages from "packages" folder in the compiled file.\n-o or --out OUTDIR - use these options to set the output directory.\n(If there\'s no --out or -o option, the standard output directory will be used (/a/Py93/compiled/))\nWorking command example: py93 c /a/w93.py --name windows93 -pi --out a/desktop');
             } else {
                 let attrs = this.arg.command.split(' ');
                 var compFile;
@@ -52,7 +52,9 @@ le._apps.py93 = {
                     }
                     $db.getRaw(compFile, dbCallback);
                     var name = null;
-                    var packages = {}
+                    var packages = {};
+                    var stdoutdir = /*'/a/*/'Py93/compiled/';
+                    var outdir = /*'/a/*/'Py93/compiled/';
                     packages.ignore = false
                     attrs.forEach((attr) => {
                         if (attr == '--name') {
@@ -62,6 +64,28 @@ le._apps.py93 = {
                         } else if (attr == '--packages-ignore' || attr == '-pi') {
                             $log(`Detected ${attr} option`)
                             packages.ignore = true
+                        } else if (attr == '--out' || attr == '-o') {
+                            $log(`Detected ${attr} option`)
+                            let outid = attrs.indexOf(`${attr}`)
+                            let wrong = false;
+                            outdir = attrs[outid + 1]
+                            // doing some validation
+                            if (outdir[0] == "/") outdir = outdir.substr(1) // a/path/
+                            if (outdir[0] != "a") {
+                                wrong = true;
+                                if (outdir[0] == "c") $log.red('py93compile: compiler error: can\'t write to /c/, using standard output directory.');
+                                else $log.red('py93compile: compiler error: wrong output directory, using standard output directory.');
+                            } else {
+                                outdir = outdir.substr(1) // /path/
+                            }
+                            if (!wrong) {
+                                outdir = outdir.substr(1) // path/
+                                if ('/' != outdir.slice(-1)) { // path => path/
+                                    outdir += '/';
+                                }
+                            } else {
+                                outdir = stdoutdir;
+                            }
                         }
                     });
                     /**
@@ -119,7 +143,8 @@ le._apps.py93 = {
                                 filename = $fs.utils.getName(compFile);
                                 filename = $fs.utils.replaceExt(filename, "html");
                             }
-                            var compNameFin = 'Py93/compiled/'+filename;
+                            var compNameFin = outdir + filename;
+                            //$log(compNameFin)
                             $db.set(compNameFin, htmlfile);
                             $log.green('Finished compilation.\nCompiled file path: /a/' + compNameFin + '\nWrite "$explorer.refresh();" to the terminal to make compiled file visible.'); // FIXME: Need to fix a bug when using $explorer.refresh() in the script does nothing
                         }
