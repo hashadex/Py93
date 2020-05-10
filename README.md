@@ -25,6 +25,7 @@ To install Py93 to your Windows 93 computer, just create `Py93` folder in `/a/`,
 -->
 
 ## Quick-start guide
+
 1. Download release archive from the [releases page](https://github.com/hasha2982/Py93/releases) and extract it to your computer.
 2. Create `Py93` folder in `/a/`.
 3. Move the extracted archive from your computer to `/a/Py93/`.
@@ -34,24 +35,31 @@ To install Py93 to your Windows 93 computer, just create `Py93` folder in `/a/`,
 See `installguide.md` for more detailed guide.
 
 ## Features
+
 * Compiler
 * Shell
 * CLI application
 
 ## How to use CLI app
+
 You can launch Py93 shell or compiler from Windows 93 terminal.
 
 To see help message, write the following in the terminal:
+
 ```
 py93
 ```
+
 or
+
 ```
 py93 help
 ```
+
 > You can also use `py93 h` instead of `py93 help`.
 
 ## CLI commands
+
 ```
 Printing out help message:
 py93
@@ -76,4 +84,4 @@ py93 compile [filename]
 // py93compile have got more options, see py93compile help message for more
 ```
 
-> *Last updated: May 8, 2020*
+> *Last updated: May 10, 2020*
