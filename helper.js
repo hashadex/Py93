@@ -1,15 +1,55 @@
 // This script should be loaded at boot.
 // Put it in /a/boot/
+// _variableName <= this variable is unused
 // TODO: Improve code
 // TODO: Minify the code a little bit, but it should be readable
 console.log('[Py93Helper] Started execution');
+/**
+ * @description Py93's stuff
+ * @global
+ */
+var $py93 = {};
+
+$py93.launchShell = function() {
+    $fs.utils.getMenuOpenWith('/a/Py93/console.html')[0].action();
+}
+
+/**
+ * Shell will get data from shellGate using window.parent
+ */
+$py93.shellGate = {};
+
+$py93.shellGate.ignore = false;
+$py93.shellGate.pkgConts = [];
 le._apps.py93 = {
     exec: function() {
         var args = this.arg.arguments;
         if (args[0] == "shell" || args[0] == "s") {
-            $fs.utils.getMenuOpenWith('/a/Py93/console.html')[0].action();
+            $py93.shellGate.ignore = false;
+            var dry = false;
+            var shellAttrs = this.arg.command.split(' ')
+            shellAttrs.forEach((attr) => {
+                if (attr == "--packages-ignore" || attr == "-pi") {
+                    $log(`Detected ${attr} option`)
+                    $py93.shellGate.ignore = true;
+                } else if (attr == '-h' || attr == '--help') {
+                    dry = true;
+                    $log(`Detected ${attr} option`)
+                    $log('Py93 Menu: Shell launcher: usage:\npy93 [s or shell] [-h or --help] [-pi or --packages-ignore]\n-h or --help - print this help message\n-pi or --packages-ignore - use these options if you don\'t want to load packages from packages folder in the shell.')
+                }
+            })
+            if (!dry) {
+                if (!$py93.shellGate.ignore) $log('Creating list of packages...')
+                $py93.shellGate.pkgConts = [];
+                $fs.utils.getFileMenu('/a/Py93/packages')["foldersList"].forEach((name) => {
+                    $db.getRaw('Py93/packages/'+name, function(_a, file) {
+                        $py93.shellGate.pkgConts.push(file)
+                    })
+                })
+                setTimeout($py93.launchShell, 500)
+            }
         } else if (args[0] == "help" || args[0] == "h") {
-            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.');
+            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.\nUse py93 [s or shell] [--help or -h] to see shell launcher options.');
         } else if (args[0] == "compile" || args[0] == "c") {
             if (
                 this.arg.command == "py93 compile" ||
@@ -47,7 +87,7 @@ le._apps.py93 = {
                 if (success) {
                     compFile = compFile.substr(2);
                     var outConts;
-                    function dbCallback(a, file) {
+                    function dbCallback(_a, file) {
                         outConts = file;
                     }
                     $db.getRaw(compFile, dbCallback);
@@ -153,7 +193,7 @@ le._apps.py93 = {
                 }
             }
         } else {
-            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.');
+            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.\nUse py93 [s or shell] [--help or -h] to see shell launcher options.');
         }
     },
     hascli: true,
