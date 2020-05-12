@@ -1,0 +1,4 @@
+todo:
+  keyword: "@todo"
+  bodyKeyword: "@body"
+  caseSensetive: true
