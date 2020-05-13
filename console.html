@@ -3,63 +3,9 @@
     <head>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython_stdlib.js"></script>
-        <!-- <script>
-            if (window.location !== window.parent.location) {
-                if (window.parent.location.host == 'www.windows93.net') {
-                    /* var packages = window.parent.$fs.utils.getFileMenu('/a/Py93/packages')["foldersList"]
-                    var list = [];
-                    var outConts = []
-                    var dbCallback = function(dummy, file) {
-                        outConts.push(file)
-                    }
-                    packages.forEach((name) => {
-                        if (name.endsWith('.brython.js')) {
-                            // window.parent.$file.getUrl('/a/Py93/packages/'+name, function(blob) {
-                            //     list.push(blob)
-                            // })
-                            window.parent.$db.getRaw(name, dbCallback)
-                        }
-                    });
-                    outConts.forEach((cont) => {
-                        if (cont != null) {
-                            var a = new Function(cont)();
-                        }
-                    })
-                    // list.forEach((blob) => {
-                    //    
-                    // }) */
-                } else {
-                    console.warn('Shell is inside an Iframe, but window.parent.location.host is not "www.windows93.net".')
-                }
-            } else {
-                console.warn('Shell is not inside an Iframe.')
-            }
-        </script> -->
         <script>
             if (window.location !== window.parent.location) {
                 if (window.parent.location.host == 'www.windows93.net') {
-                    /* var packages = window.parent.$fs.utils.getFileMenu('/a/Py93/packages')["foldersList"]
-                    var list = [];
-                    var outConts = []
-                    var dbCallback = function(dummy, file) {
-                        outConts.push(file)
-                    }
-                    packages.forEach((name) => {
-                        if (name.endsWith('.brython.js')) {
-                            // window.parent.$file.getUrl('/a/Py93/packages/'+name, function(blob) {
-                            //     list.push(blob)
-                            // })
-                            window.parent.$db.getRaw(name, dbCallback)
-                        }
-                    });
-                    outConts.forEach((cont) => {
-                        if (cont != null) {
-                            var a = new Function(cont)();
-                        }
-                    })
-                    // list.forEach((blob) => {
-                    //    
-                    // }) */
                     var gate = window.parent.$py93.shellGate
                     if (!gate.ignore) {
                         gate.pkgConts.forEach((cont) => {
