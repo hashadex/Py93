@@ -46,9 +46,11 @@ le._apps.py93 = {
                 if (!$py93.shellGate.ignore) $log('Creating list of packages...')
                 $py93.shellGate.pkgConts = [];
                 $fs.utils.getFileMenu('/a/Py93/packages')["foldersList"].forEach((name) => {
-                    $db.getRaw('Py93/packages/'+name, function(_a, file) {
-                        $py93.shellGate.pkgConts.push(file)
-                    })
+                    if (name.endsWith('.brython.js')) {
+                        $db.getRaw('Py93/packages/'+name, function(_a, file) {
+                            $py93.shellGate.pkgConts.push(file)
+                        })
+                    }
                 })
                 setTimeout($py93.launchShell, 500)
             }
