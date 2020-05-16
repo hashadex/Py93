@@ -27,6 +27,7 @@ $py93.shellGate = {};
 
 $py93.shellGate.ignore = false;
 $py93.shellGate.pkgConts = [];
+$py93.help = 'Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.\nUse py93 [s or shell] [--help or -h] to see shell launcher options.'
 le._apps.py93 = {
     exec: function() {
         var args = this.arg.arguments;
@@ -55,7 +56,7 @@ le._apps.py93 = {
                 setTimeout($py93.launchShell, 500)
             }
         } else if (args[0] == "help" || args[0] == "h") {
-            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.\nUse py93 [s or shell] [--help or -h] to see shell launcher options.');
+            $log($py93.help);
         } else if (args[0] == "compile" || args[0] == "c") {
             if (
                 this.arg.command == "py93 compile" ||
@@ -199,7 +200,7 @@ le._apps.py93 = {
                 }
             }
         } else {
-            $log('Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.\nUse py93 [s or shell] [--help or -h] to see shell launcher options.');
+            $log($py93.help);
         }
     },
     hascli: true,
