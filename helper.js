@@ -4,8 +4,10 @@
 // TODO: Improve code
 // TODO: Minify the code a little bit, but it should be readable
 
-// @todo Make helper.js JSHint-beautiful or very close to it
-// @body Add missing semicolons, get rid of "confusing use of !".
+/**
+ * @todo Make helper.js JSHint-beautiful or very close to it
+ * @body Add missing semicolons, get rid of "confusing use of !".
+ */
 
 console.log('[Py93Helper] Started execution');
 /**
@@ -46,11 +48,9 @@ le._apps.py93 = {
                 if (!$py93.shellGate.ignore) $log('Creating list of packages...')
                 $py93.shellGate.pkgConts = [];
                 $fs.utils.getFileMenu('/a/Py93/packages')["foldersList"].forEach((name) => {
-                    if (name.endsWith('.brython.js')) {
-                        $db.getRaw('Py93/packages/'+name, function(_a, file) {
-                            $py93.shellGate.pkgConts.push(file)
-                        })
-                    }
+                    $db.getRaw('Py93/packages/'+name, function(_a, file) {
+                        $py93.shellGate.pkgConts.push(file)
+                    })
                 })
                 setTimeout($py93.launchShell, 500)
             }

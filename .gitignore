@@ -2,3 +2,5 @@ template.html
 assets/*
 brython/*
 releases/*
+releases.json
+install.html
