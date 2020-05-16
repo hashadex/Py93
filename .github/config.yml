@@ -1,4 +1,3 @@
 todo:
-  keyword: "@todo"
-  bodyKeyword: "@body"
-  caseSensetive: true
+  keyword: ["@todo"]
+  bodyKeyword: ["@body"]
