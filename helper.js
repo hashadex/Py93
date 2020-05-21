@@ -231,6 +231,10 @@ le._apps.py93 = {
                     xhr.ontimeout = function() {
                         $log('py93pm: error: request timed out')
                     }
+                    xhr.onerror = function(e) {
+                        $log.red('py93pm: request error: request failed, look for more info in the JavaScript console.')
+                        console.error(new Error(`Request failed.\n${e}`))
+                    }
                     xhr.onload = function() {
                         console.log(`py93pm: onload: ${xhr.status}, ${xhr.statusText}`);
                         if (xhr.status <= 299 && xhr.status >= 200) {
@@ -334,6 +338,8 @@ le._apps.py93 = {
                             $log.red(`py93pm: HTTP error: ${xhr.status} ${xhr.statusText}`)
                         }
                     }
+                    xhr.send()
+                    $log('Sended the request, now awaiting response. This can take up to 30 seconds.')
                 }
             }
         } else {
