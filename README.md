@@ -11,6 +11,7 @@ Py93 is a Python 3 compiler and shell (based on [Brython](https://brython.info))
 ![License: MPL-2.0](https://img.shields.io/badge/license-MPL--2.0-informational)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/hasha2982/Py93?label=latest%20release)
 ![GitHub last commit](https://img.shields.io/github/last-commit/hasha2982/Py93)
+![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/hasha2982/Py93?logo=codefactor)
 
 <!--- code redactor (based on [CodeMirror](https://codemirror.net)),  -->
 
