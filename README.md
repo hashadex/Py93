@@ -23,7 +23,7 @@ To install Py93 to your Windows 93 computer, just create `Py93` folder in `/a/`,
 
 > **Warning:** This branch is experimental and things may work not as they should work.
 >
-> **Another warning:** I haven't tested the current version of the package manager, and most likely, it will just don't work.
+> **Another warning:** The current version of package manager is working, but it's not production-ready. The only things it should do at this moment is grabbing JSON from server, validating it, and putting the contents of the JSON from server into another JSON.
 
 ## Quick-start guide
 
