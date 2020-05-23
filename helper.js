@@ -38,7 +38,7 @@ $py93.shellGate = {};
 
 $py93.shellGate.ignore = false;
 $py93.shellGate.pkgConts = [];
-$py93.help = 'Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\nUse py93 [compile or c] [help or h] to see py93compile usage.\nUse py93 [s or shell] [--help or -h] to see shell launcher options.'
+$py93.help = 'Py93 Menu: usage:\nh, help - print this help message\ns, shell - launch Py93 shell\nc, compile - launch py93compile (Py93 Compiler)\npm - launch package manager\nUse py93 [compile or c] [help or h] to see py93compile usage.\nUse py93 [s or shell] [--help or -h] to see shell launcher options.\nUse py93 pm [help or h] to see package manager help message'
 le._apps.py93 = {
     exec: function() {
         var args = this.arg.arguments;
@@ -106,7 +106,10 @@ le._apps.py93 = {
                     compFile = compFile.substr(2);
                     var outConts;
                     function dbCallback(_a, file) {
-                        outConts = file;
+                        if (typeof file == "string") outConts = file;
+                        else if (typeof file == "object") file.text().then(function(fileConts) {
+                            outConts = fileConts;
+                        })
                     }
                     $db.getRaw(compFile, dbCallback);
                     var name = null;
@@ -147,18 +150,28 @@ le._apps.py93 = {
                         }
                     });
                     /**
-                     * Makes an HTML <script> tag depending on blob parameter
-                     * @param {string} blob Blob URL of a file that exists on local Windows 93 machine
-                     * @returns {string} String with HTML script tag that haves blob parameter as src attribute and that haves 2 tabs (2*4=8 spaces) before the tag itself 
+                     * Makes an HTML <script> tag depending on url parameter
+                     * @param {string} url Any URL, actually can be any value that can be converted to string
+                     * @returns {string} String with HTML script tag that haves url parameter as src attribute and that haves 2 tabs (2*4=8 spaces) before the tag itself 
                      */
-                    packages.toHTML = function(blob) {
-                        var script = `        <script src="` + blob + `"></script>`
+                    packages.toHTML = function(url) {
+                        var script = `        <script src="` + url + `"></script>`
                         return script
                     }
                     packages.joinedTags = '        <!-- 4:no packages -->' // * 4 is some kind of error code, i use it for debugging
+                    var pmData;
                     if (!packages.ignore) {
                         packages.list = []
                         packages.tags = []
+                        $db.getRaw('Py93/pm/data.json', function(_a, file) {
+                            if (typeof file == "string") {
+                                pmData = file;
+                            } else if (typeof file == "object") {
+                                file.text().then(function(filestr) {
+                                    pmData = filestr
+                                })
+                            }
+                        })
                         $fs.utils.getFileMenu('/a/Py93/packages')["foldersList"].forEach((name) => {
                             if (name.endsWith('.brython.js')) {
                                 $file.getUrl('/a/Py93/packages/'+name, function(blob) {
@@ -187,8 +200,20 @@ le._apps.py93 = {
                             tabbedStr = tabbed.join('\n');
                             var date = new Date();
                             if (!packages.ignore) {
-                                packages.list.forEach((blob) => {
-                                    packages.tags.push(packages.toHTML(blob))
+                                var pmDataJSON = undefined;
+                                try {
+                                    pmDataJSON = JSON.parse(pmData)
+                                } catch(e) {
+                                    $log.red('py93compile: compiler error: failed to parse data.json in /a/Py93/pm/. Packages installed via package manager would be not loaded.\nMore info in the JavaScript console.')
+                                    console.error(new Error(`Failed to parse data.json.\n${e.stack}`));
+                                }
+                                if (pmDataJSON != undefined) {
+                                    pmDataJSON.installed.forEach((package) => {
+                                        packages.list.push(package.install.package)
+                                    })
+                                }
+                                packages.list.forEach((url) => {
+                                    packages.tags.push(packages.toHTML(url))
                                 })
                                 packages.joinedTags = packages.tags.join('\n')
                                 if (packages.joinedTags == "") packages.joinedTags = '        <!-- 5:no packages -->'
@@ -203,15 +228,16 @@ le._apps.py93 = {
                             }
                             var compNameFin = outdir + filename;
                             //$log(compNameFin)
+                            //$log(packages)
                             $db.set(compNameFin, htmlfile);
                             $log.green('Finished compilation.\nCompiled file path: /a/' + compNameFin + '\nWrite "$explorer.refresh();" to the terminal to make compiled file visible.'); // FIXME: Need to fix a bug when using $explorer.refresh() in the script does nothing
                         }
                     }
-                    setTimeout(compile, 500);
+                    setTimeout(compile, 650);
                 }
             }
         } else if (args[0] == "pm") {
-            var help = 'py93pm: usage:\npy93 pm [help or h]\n===========================================================\nhelp or h - print this help message';
+            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL]\n===========================================================\nhelp or h - print this help message\nadd URL - install a package, URL is a link to JSON package file that you want to install';
             if (
                 this.arg.command == "py93 pm" ||
                 this.arg.command == "py93 pm " ||
