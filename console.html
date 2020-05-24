@@ -8,6 +8,13 @@
                 if (window.parent.location.host == 'www.windows93.net') {
                     var gate = window.parent.$py93.shellGate
                     if (!gate.ignore) {
+                        gate.pmPkgUrls.forEach((url) => {
+                            var elem = document.createElement('script')
+                            elem.src = url;
+                            elem.id = 'pm-js';
+                            document.head.append(elem);
+                            console.log(`Loaded Package manager's package with URL ${url}`);
+                        })
                         gate.pkgConts.forEach((cont) => {
                             if (typeof(cont) != "object") {
                                 const _b = new Function(cont)();

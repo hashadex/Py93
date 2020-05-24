@@ -59,9 +59,46 @@ le._apps.py93 = {
             if (!dry) {
                 if (!$py93.shellGate.ignore) $log('Creating list of packages...')
                 $py93.shellGate.pkgConts = [];
+                $py93.shellGate.pmPkgUrls = [];
+                $db.getRaw('Py93/pm/data.json', function(_a, file) {
+                    var pmDataJSON = undefined;
+                    if (typeof file == "string") {
+                        try {
+                            pmDataJSON = JSON.parse(file)
+                        } catch(e) {
+                            if (!$py93.shellGate.ignore) $log.red('Py93 Menu: Shell launcher: JSON error: failed to parse data.json in /a/Py93/pm/. Packages installed via package manager will be not loaded.\nMore info in the JavaScript console.')
+                            console.error(new Error(`Failed to parse data.json.\n${e.stack}`));
+                        }
+                        if (pmDataJSON != undefined) {
+                            pmDataJSON.installed.forEach((package) => {
+                                $py93.shellGate.pmPkgUrls.push(package.install.package)
+                            })
+                        }
+                    } else if (typeof file == "object") {
+                        file.text().then(function(filestr) {
+                            try {
+                                pmDataJSON = JSON.parse(filestr)
+                            } catch(e) {
+                                if (!$py93.shellGate.ignore) $log.red('Py93 Menu: Shell launcher: JSON error: failed to parse data.json in /a/Py93/pm/. Packages installed via package manager will be not loaded.\nMore info in the JavaScript console.')
+                                console.error(new Error(`Failed to parse data.json.\n${e.stack}`));
+                            }
+                            if (pmDataJSON != undefined) {
+                                pmDataJSON.installed.forEach((package) => {
+                                    $py93.shellGate.pmPkgUrls.push(package.install.package)
+                                })
+                            }
+                        })
+                    }
+                })
                 $fs.utils.getFileMenu('/a/Py93/packages')["foldersList"].forEach((name) => {
                     $db.getRaw('Py93/packages/'+name, function(_a, file) {
-                        $py93.shellGate.pkgConts.push(file)
+                        if (typeof file == 'string') {
+                            $py93.shellGate.pkgConts.push(file)
+                        } else if (typeof file == 'object') {
+                            file.text().then(function(filestr) {
+                                $py93.shellGate.pkgConts.push(filestr)
+                            })
+                        }
                     })
                 })
                 setTimeout($py93.launchShell, 500)
