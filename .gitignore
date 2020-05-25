@@ -2,6 +2,7 @@ template.html
 assets/*
 brython/*
 releases/*
+table/*
 releases.json
 install.html
 example.json

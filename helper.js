@@ -404,6 +404,40 @@ le._apps.py93 = {
                     }
                     xhr.send()
                     $log('Sended the request, now awaiting response. This can take up to 30 seconds.')
+                } else if (args[1] == "list") {
+                    $db.getRaw('Py93/pm/data.json', function(_a, file) {
+                        if (typeof file == "string") {
+                            var pmDataJSON = undefined;
+                            try {
+                                pmDataJSON = JSON.parse(file)
+                            } catch(e) {
+                                $log.red(`py93pm: JSON error: failed to parse data.json in /a/Py93/pm/\nError details:\n${e.stack}`)
+                                console.error(new Error(e.stack));
+                            }
+                            if (pmDataJSON != undefined) {
+                                $log(`You have ${pmDataJSON.installed.length} packages installed.`)
+                                pmDataJSON.installed.forEach((package) => {
+                                    $log(`\nTitle: ${package.meta.title}\nVersion: ${package.meta.dispVer}`)
+                                })
+                            }
+                        } else if (typeof file == "object") {
+                            file.text().then(function(filestr) {
+                                var pmDataJSON = undefined;
+                                try {
+                                    pmDataJSON = JSON.parse(filestr)
+                                } catch(e) {
+                                    $log.red(`py93pm: JSON error: failed to parse data.json in /a/Py93/pm/\nError details:\n${e.stack}`)
+                                    console.error(new Error(e.stack));
+                                }
+                                if (pmDataJSON != undefined) {
+                                    $log(`You have ${pmDataJSON.installed.length} packages installed.`)
+                                    pmDataJSON.installed.forEach((package) => {
+                                        $log(`\nTitle: ${package.meta.title}\nVersion: ${package.meta.dispVer}`)
+                                    })
+                                }
+                            })
+                        }
+                    })
                 }
             }
         } else {
