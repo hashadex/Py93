@@ -274,7 +274,7 @@ le._apps.py93 = {
                 }
             }
         } else if (args[0] == "pm") {
-            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL]\n===========================================================\nhelp or h - print this help message\nadd URL - install a package, URL is a link to JSON package file that you want to install';
+            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL] [list]\n===========================================================\nhelp or h - print this help message\nadd URL - install a package, URL is a link to JSON package file that you want to install\nlist - output a list of packages that you have installed';
             if (
                 this.arg.command == "py93 pm" ||
                 this.arg.command == "py93 pm " ||
