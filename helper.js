@@ -291,7 +291,7 @@ le._apps.py93 = {
                     xhr.open("GET", args[2], true)
                     xhr.timeout = 30000
                     xhr.ontimeout = function() {
-                        $log('py93pm: error: request timed out')
+                        $log.red('py93pm: error: request timed out')
                     }
                     xhr.onerror = function(e) {
                         $log.red('py93pm: request error: request failed, look for more info in the JavaScript console.')
@@ -404,6 +404,41 @@ le._apps.py93 = {
                     }
                     xhr.send()
                     $log('Sended the request, now awaiting response. This can take up to 30 seconds.')
+                } else if (args[1] == "rem") {
+                    $db.getRaw('Py93/pm/data.json', function(_a, file) {
+                        if (typeof file == "string") {
+                            var pmDataJSON = undefined;
+                            try {
+                                pmDataJSON = JSON.parse(file)
+                            } catch(e) {
+                                $log.red(`py93pm: JSON error: failed to parse data.json in /a/Py93/pm/\nError details:\n${e.stack}`)
+                                console.error(new Error(e.stack))
+                            }
+                            if (pmDataJSON != undefined) {
+                                $log(`Searching for package "${args[2]}"...`)
+                                var found = false;
+                                pmDataJSON.installed.forEach((package, index) => {
+                                    if (package.meta.title == args[2]) {
+                                        $log(`Found package "${package.meta.title}", index ${index}`)
+                                        found = true
+                                    }
+                                })
+                                if (found) {
+                                    pmDataJSON.installed = pmDataJSON.installed.filter((package, index) => {
+                                        if (package.meta.title == args[2]) {
+                                            $log(`Removed package "${package.meta.title}", index ${index}`)
+                                            return false;
+                                        } else {
+                                            return true;
+                                        }
+                                    })
+                                    $db.set('Py93/pm/data.json', JSON.stringify(pmDataJSON))
+                                } else {
+                                    $log.red(`py93pm: error: package "${args[2]}" not found`)
+                                }
+                            }
+                        }
+                    })
                 } else if (args[1] == "list") {
                     $db.getRaw('Py93/pm/data.json', function(_a, file) {
                         if (typeof file == "string") {
