@@ -274,7 +274,7 @@ le._apps.py93 = {
                 }
             }
         } else if (args[0] == "pm") {
-            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL] [list]\n===========================================================\nhelp or h - print this help message\nadd URL - install a package, URL is a link to JSON package file that you want to install\nlist - output a list of packages that you have installed';
+            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL] [rem NAME] [list]\n===========================================================\nhelp or h - print this help message\nadd URL - install a package, URL is a link to JSON package file that you want to install\nrem NAME - remove an installed package, NAME is name of the package that you want to remove\nlist - output a list of packages that you have installed';
             if (
                 this.arg.command == "py93 pm" ||
                 this.arg.command == "py93 pm " ||
@@ -287,10 +287,10 @@ le._apps.py93 = {
             } else {
                 if (args[1] == "add") {
                     var attrs = this.arg.command.split(' ')
-                    var upgrade = false;
+                    var reAdd = false;
                     attrs.forEach((attr) => {
-                        if (attr == "--upgrade" || attr == "-u") {
-                            upgrade = true;
+                        if (attr == "--readd" || attr == "-r") {
+                            reAdd = true;
                         } 
                     })
                     var xhr = new XMLHttpRequest();
@@ -365,7 +365,7 @@ le._apps.py93 = {
                                                     if (!found) {
                                                         install()
                                                     } else {
-                                                        if (upgrade) {
+                                                        if (reAdd) {
                                                             pmData.installed = pmData.installed.filter((package, index) => {
                                                                 if (package.meta.title == respJSON.meta.title) {
                                                                     $log(`Removed package "${package.meta.title}", index ${index}`)
@@ -378,7 +378,7 @@ le._apps.py93 = {
                                                             //console.log(pmData)
                                                             setTimeout(install, 200)
                                                         } else {
-                                                            $log.red(`py93pm: error: found package with title "${respJSON.meta.title}" installed.\nUse --upgrade or -u to overwrite the installed package.`)
+                                                            $log.red(`py93pm: error: found package with title "${respJSON.meta.title}" installed.\nUse --readd or -r to overwrite installations of package "${respJSON.meta.title}".`)
                                                         }
                                                     }
                                                 }
