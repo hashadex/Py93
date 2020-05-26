@@ -522,6 +522,8 @@ le._apps.py93 = {
                             })
                         }
                     })
+                } else {
+                    $log(help)
                 }
             }
         } else {
