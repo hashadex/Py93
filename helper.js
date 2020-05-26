@@ -274,7 +274,7 @@ le._apps.py93 = {
                 }
             }
         } else if (args[0] == "pm") {
-            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL] [rem NAME] [list]\n===========================================================\nhelp or h - print this help message\nadd URL - install a package, URL is a link to JSON package file that you want to install\nrem NAME - remove an installed package, NAME is name of the package that you want to remove\nlist - output a list of packages that you have installed';
+            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL] [rem NAME] [u NAME or upgrade NAME] [list]\n===========================================================\nhelp or h - print this help message\nadd URL - install a package, URL is a link to JSON package file that you want to install\nrem NAME - remove an installed package, NAME is name of the package that you want to remove\nlist - output a list of packages that you have installed\nu NAME, upgrade NAME - try to upgrade a package, NAME is the name of package you want to upgrade';
             if (
                 this.arg.command == "py93 pm" ||
                 this.arg.command == "py93 pm " ||
@@ -520,6 +520,233 @@ le._apps.py93 = {
                                     })
                                 }
                             })
+                        }
+                    })
+                } else if (args[1] == "upgrade" || args[1] == "u") {
+                    $db.getRaw('Py93/pm/data.json', function(_a, file) {
+                        if (typeof file == "string") {
+                            var pmDataJSON = undefined;
+                            try {
+                                pmDataJSON = JSON.parse(file)
+                            } catch(e) {
+                                $log.red(`py93pm: JSON error: failed to parse data.json in /a/Py93/pm/\nError details:\n${e.stack}`)
+                                console.error(new Error(e.stack));
+                            }
+                            if (pmDataJSON != undefined) {
+                                $log(`Searching for package "${args[2]}"...`)
+                                var found = false;
+                                pmDataJSON.installed.forEach((package, index) => {
+                                    if (package.meta.title == args[2]) {
+                                        $log(`Found package "${package.meta.title}", index ${index}`)
+                                        found = true
+                                    }
+                                })
+                                if (found) {
+                                    var foundSelf = false;
+                                    var packageSelf = undefined;
+                                    var oldCompVer;
+                                    pmDataJSON.installed.forEach((package) => {
+                                        if (package.meta.title == args[2] && !foundSelf) {
+                                            oldCompVer = package.meta.compVer
+                                            if (typeof package.install.self != "undefined") {
+                                                //$log(`${package.meta.title} ${args[2]} ${package.install.self}`)
+                                                foundSelf = true
+                                                packageSelf = package.install.self
+                                            } 
+                                        }
+                                    })
+                                    //$log(packageSelf)
+                                    //$log(foundSelf)
+                                    if (foundSelf) {
+                                        var xhr = new XMLHttpRequest();
+                                        $log('Configuring request...')
+                                        xhr.open("GET", packageSelf, true)
+                                        xhr.timeout = 30000
+                                        xhr.ontimeout = function() {
+                                            $log.red('py93pm: error: request timed out')
+                                        }
+                                        xhr.onerror = function(e) {
+                                            $log.red('py93pm: request error: request failed, look for more info in the JavaScript console.')
+                                            console.error(new Error(`Request failed.\n${e}`))
+                                        }
+                                        xhr.onload = function() {
+                                            console.log(`py93pm: onload: ${xhr.status}, ${xhr.statusText}`);
+                                            if (xhr.status <= 299 && xhr.status >= 200) {
+                                                if (xhr.getResponseHeader("Content-Type").startsWith('application/json')) {
+                                                    var success = true;
+                                                    try {
+                                                        var respJSON = JSON.parse(xhr.response)
+                                                    } catch (e) {
+                                                        success = false
+                                                        $log.red('py93pm: JSON error: failed to parse JSON, more info in the JavaScript console')
+                                                        console.error(new Error(e.stack)) // we're not throwing the error, because there will be "Uncaught" at the start of error text
+                                                    }
+                                                    if (success) {
+                                                        /**
+                                                         * This object contains 8 booleans for validating package JSON file.
+                                                         * After validating, all booleans should be equal to true.
+                                                         */
+                                                        var checks = {
+                                                            versionExist: false, // True if "version" exist
+                                                            versionIsNum: false, // True if "version" is a number
+                                                            versionSupp: false, // True if package JSON file syntax (defined in "version") is supported by this version
+                                                            metaExist: false, // True if "meta" exist and typeof is "object"
+                                                            meta_titleExist: false, // True if "title" in "meta" exist
+                                                            meta_compVerExist: false, // True if "compVer" in "meta" exist
+                                                            installExist: false, // True if "install" exist and typeof is "object"
+                                                            install_packageExist: false // True if "package" in "install" exist and typeof is "string"
+                                                        }
+                                                        // Validating JSON
+                                                        if (typeof respJSON == "object") { // just double-checked to make absolutely sure, this if statement may be removed in future
+                                                            if (typeof respJSON.version != "undefined") checks.versionExist = true;
+                                                            if (typeof respJSON.version == "number") checks.versionIsNum = true;
+                                                            if ($py93.pm.supportedVers.includes(respJSON.version)) checks.versionSupp = true;
+                                                            if (typeof respJSON.meta != "undefined" && typeof respJSON.meta == "object") {
+                                                                checks.metaExist = true;
+                                                                if (typeof respJSON.meta.title != "undefined") checks.meta_titleExist = true;
+                                                                if (typeof respJSON.meta.compVer != "undefined") checks.meta_compVerExist = true;
+                                                            }
+                                                            if (typeof respJSON.install == "object") {
+                                                                checks.installExist = true;
+                                                                if (typeof respJSON.install.package != "undefined" || typeof respJSON.install.package == "string") checks.install_packageExist = true;
+                                                            }
+                    
+                                                            //// $db.getRaw('Py93/pm/data.json', function(_a, file) {
+                                                            ////     if (typeof file == "string") {
+                                                            ////         var pmData = undefined;
+                                                            ////         try {
+                                                            ////             pmData = JSON.parse(file)
+                                                            ////         } catch(e) {
+                                                            ////             $log.red('py93compile: compiler error: failed to parse data.json in /a/Py93/pm/. Packages installed via package manager would be not loaded.\nMore info in the JavaScript console.')
+                                                            ////             console.error(new Error(`Failed to parse data.json.\n${e.stack}`));
+                                                            ////         }
+                                                            ////         if (pmData != undefined) {
+                                                            ////             var found = false;
+                                                            ////             pmData.installed.forEach((package) => {
+                                                            ////                 if (package.meta.title == respJSON.meta.title) {
+                                                            ////                     found = true;
+                                                            ////                 }
+                                                            ////             })
+                                                            ////             if (!found) {
+                                                            ////                 install()
+                                                            ////             } else {
+                                                            ////                 if (reAdd) {
+                                                            ////                     pmData.installed = pmData.installed.filter((package, index) => {
+                                                            ////                         if (package.meta.title == respJSON.meta.title) {
+                                                            ////                             $log(`Removed package "${package.meta.title}", index ${index}`)
+                                                            ////                             return false;
+                                                            ////                         } else {
+                                                            ////                             return true;
+                                                            ////                         }
+                                                            ////                     })
+                                                            ////                     $db.set('Py93/pm/data.json', JSON.stringify(pmData))
+                                                            ////                     //console.log(pmData)
+                                                            ////                     setTimeout(install, 200)
+                                                            ////                 } else {
+                                                            ////                     $log.red(`py93pm: error: found package with title "${respJSON.meta.title}" installed.\nUse --readd or -r to overwrite installations of package "${respJSON.meta.title}".`)
+                                                            ////                 }
+                                                            ////             }
+                                                            ////         }
+                                                            ////     }
+                                                            //// })
+                    
+                                                            // var install = function() {
+                                                            //console.log(pmData)
+                                                            if (Object.values(checks).every(Boolean)) {
+                                                                if (respJSON.meta.compVer > oldCompVer) {
+                                                                    $log(`Package "${respJSON.meta.title}"\n===========================================================`)
+                                                                    $log(`Title: ${respJSON.meta.title}`)
+                                                                    if (typeof respJSON.meta.author != "undefined") $log(`Author: ${respJSON.meta.author}`)
+                                                                    $log(`Version: ${(typeof respJSON.meta.dispVer != "undefined") ? respJSON.meta.dispVer : respJSON.meta.compVer}`)
+                                                                    if (typeof respJSON.meta.license != 'undefined') $log(`License: ${respJSON.meta.license}`)
+                                                                    if (typeof respJSON.meta.packageSite != 'undefined') $log(`Package site/repository: ${respJSON.meta.packageSite}`)
+                                                                    if (confirm(`You are going to upgrade package "${respJSON.meta.title}". Are you sure?`)) {
+                                                                        // yay, finally we installing it!
+                                                                        var pmData;
+                                                                        $db.getRaw('Py93/pm/data.json', function(_a, file) {
+                                                                            if (typeof file == "object") {
+                                                                                file.text().then(function(filestr) {
+                                                                                    try {
+                                                                                        pmData = JSON.parse(filestr)
+                                                                                    } catch(e) {
+                                                                                        $log.red(`py93pm: JSON error: failed to parse data.json in /a/Py93/pm/\nError details:\n${e.stack}`)
+                                                                                        console.error(new Error(e.stack))
+                                                                                    }
+                                                                                    if (typeof pmData != "undefined") {
+                                                                                        pmData.installed = pmData.installed.filter((package, index) => {
+                                                                                            if (package.meta.title == args[2]) {
+                                                                                                $log(`Removed package "${package.meta.title}", index ${index}`)
+                                                                                                return false;
+                                                                                            } else {
+                                                                                                return true;
+                                                                                            }
+                                                                                        })
+                                                                                        pmData.installed.push(respJSON)
+                                                                                        $db.set('Py93/pm/data.json', JSON.stringify(pmData))
+                                                                                    }
+                                                                                })
+                                                                            } else if (typeof file == "string") {
+                                                                                try {
+                                                                                    pmData = JSON.parse(file)
+                                                                                } catch(e) {
+                                                                                    $log.red(`py93pm: JSON error: failed to parse data.json in /a/Py93/pm/\nError details:\n${e.stack}`)
+                                                                                    console.error(new Error(e.stack))
+                                                                                }
+                                                                                if (typeof pmData != "undefined") {
+                                                                                    pmData.installed = pmData.installed.filter((package, index) => {
+                                                                                        if (package.meta.title == args[2]) {
+                                                                                            $log(`Removed package "${package.meta.title}", index ${index}`)
+                                                                                            return false;
+                                                                                        } else {
+                                                                                            return true;
+                                                                                        }
+                                                                                    })
+                                                                                    pmData.installed.push(respJSON)
+                                                                                    $db.set('Py93/pm/data.json', JSON.stringify(pmData))
+                                                                                }
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                } else if (respJSON.meta.compVer == oldCompVer) {
+                                                                    $log(`Package "${respJSON.meta.title}" is up to date. (comparsion versions in old package and package recieved from server are same)`)
+                                                                } else {
+                                                                    $log.red(`py93pm: upgrade error: comparsion versions (compvers) in old package and package recieved from server are not same and compver from package recieved from server is not greater than compver from old package`)
+                                                                }
+                                                            } else {
+                                                                $log(checks)
+                                                                //$log(checksNum)
+                                                                $log.red('py93pm: error: not all checks of JSON package file were successful.\nLook for more info in the JavaScript console.')
+                                                                console.error(new Error('Not all checks of JSON package file were successful.'))
+                                                                if (checks.versionExist != true) console.log(new Error('Check "versionExist" was not successful.'))
+                                                                if (checks.versionIsNum != true) console.log(new Error('Check "versionIsNum" was not successful.'))
+                                                                if (checks.versionSupp != true) console.log(new Error('Check "versionSupp" was not successful.'))
+                                                                if (checks.metaExist != true) console.log(new Error('Check "metaExist" was not successful.'))
+                                                                if (checks.meta_titleExist != true) console.log(new Error('Check "meta_titleExist" was not successful.'))
+                                                                if (checks.meta_compVerExist != true) console.log(new Error('Check "meta_compVerExist" was not successful.'))
+                                                                if (checks.installExist != true) console.log(new Error('Check "installExist" was not successful.'))
+                                                                if (checks.install_packageExist != true) console.log(new Error('Check "install_packageExist" was not successful.'))
+                                                            }
+                                                            // }
+                                                        } else {
+                                                            new Error("respJSON is not object")
+                                                        }
+                                                    }
+                                                } else {
+                                                    $log.red(`py93pm: error: response header "Content-Type" value should start with "application/json", but "Content-Type" value is ${xhr.getResponseHeader('Content-Type')}`)
+                                                }
+                                            } else {
+                                                $log.red(`py93pm: HTTP error: ${xhr.status} ${xhr.statusText}`)
+                                            }
+                                        }
+                                        xhr.send()
+                                        $log('Sended the request, now awaiting response. This can take up to 30 seconds.')
+                                    } else {
+                                        $log.red(`py93pm: upgrade error: package "${args[2]}" can't be upgraded using upgrade: not found "self" of package "${args[2]}"`)
+                                    }
+                                } else {
+                                    $log.red(`py93pm: error: package "${args[2]}" not found`)
+                                }
+                            }
                         }
                     })
                 } else {
