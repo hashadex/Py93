@@ -230,7 +230,7 @@ le._apps.py93 = {
                             var tabs = '            ';
                             var tabbed = [];
                             spl.forEach((element) => {
-                                if (typeof(element) == 'string') {
+                                if (typeof element == 'string') {
                                     tabbed.push(tabs + element);
                                 }
                             });
