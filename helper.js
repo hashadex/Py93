@@ -274,7 +274,7 @@ le._apps.py93 = {
                 }
             }
         } else if (args[0] == "pm") {
-            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL] [rem NAME] [u NAME or upgrade NAME] [info NAME] [list]\n===========================================================\nhelp or h - print this help message\nadd URL - install a package, URL is a link to JSON package file that you want to install\nrem NAME - remove an installed package, NAME is name of the package that you want to remove\nlist - output a list of packages that you have installed\nu NAME, upgrade NAME - try to upgrade a package, NAME is the name of package you want to upgrade\ninfo NAME - get info about installed package which name is NAME.\nExample: py93 pm info py93-packagetest => print info about installed package "py93-packagetest"';
+            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL or a URL] [rem NAME or r NAME] [u NAME or upgrade NAME] [info NAME or i NAME] [list]\n===========================================================\nhelp or h - print this help message\nadd URL, a URL - install a package, URL is a link to JSON package file that you want to install\nrem NAME, r NAME - remove an installed package, NAME is name of the package that you want to remove\nlist, l - output a list of packages that you have installed\nu NAME, upgrade NAME - try to upgrade a package, NAME is the name of package you want to upgrade\ninfo NAME, i NAME - get info about installed package which name is NAME.\nExample: py93 pm i py93-packagetest => print info about installed package "py93-packagetest"';
             if (
                 this.arg.command == "py93 pm" ||
                 this.arg.command == "py93 pm " ||
@@ -285,7 +285,7 @@ le._apps.py93 = {
             ) {
                 $log(help)
             } else {
-                if (args[1] == "add") {
+                if (args[1] == "add" || args[1] == "a") {
                     var attrs = this.arg.command.split(' ')
                     var reAdd = false;
                     attrs.forEach((attr) => {
@@ -453,7 +453,7 @@ le._apps.py93 = {
                     }
                     xhr.send()
                     $log('Sended the request, now awaiting response. This can take up to 30 seconds.')
-                } else if (args[1] == "rem") {
+                } else if (args[1] == "rem" || args[1] == "r") {
                     $db.getRaw('Py93/pm/data.json', function(_a, file) {
                         if (typeof file == "string") {
                             var pmDataJSON = undefined;
@@ -488,7 +488,7 @@ le._apps.py93 = {
                             }
                         }
                     })
-                } else if (args[1] == "list") {
+                } else if (args[1] == "list" || args[1] == "l") {
                     $db.getRaw('Py93/pm/data.json', function(_a, file) {
                         if (typeof file == "string") {
                             var pmDataJSON = undefined;
@@ -501,7 +501,7 @@ le._apps.py93 = {
                             if (pmDataJSON != undefined) {
                                 $log(`You have ${pmDataJSON.installed.length} packages installed.`)
                                 pmDataJSON.installed.forEach((package) => {
-                                    $log(`\nTitle: ${package.meta.title}\nVersion: ${/*package.meta.dispVer*/ (typeof package.meta.dispVer != "undefined") ? package.meta.dispVer : package.meta.compVer}`)
+                                    $log(`\nTitle: ${package.meta.title}\nVersion: ${(typeof package.meta.dispVer != "undefined") ? package.meta.dispVer : package.meta.compVer}`)
                                 })
                             }
                         } else if (typeof file == "object") {
@@ -516,7 +516,7 @@ le._apps.py93 = {
                                 if (pmDataJSON != undefined) {
                                     $log(`You have ${pmDataJSON.installed.length} packages installed.`)
                                     pmDataJSON.installed.forEach((package) => {
-                                        $log(`\nTitle: ${package.meta.title}\nVersion: ${package.meta.dispVer}`)
+                                        $log(`\nTitle: ${package.meta.title}\nVersion: ${(typeof package.meta.dispVer != "undefined") ? package.meta.dispVer : package.meta.compVer}}`)
                                     })
                                 }
                             })
@@ -974,7 +974,7 @@ le._apps.py93 = {
                             })
                         }
                     })
-                } else if (args[1] == "info") {
+                } else if (args[1] == "info" || args[1] == "i") {
                     $db.getRaw('Py93/pm/data.json', function(_a, file) {
                         if (typeof file == "string") {
                             var pmDataJSON = undefined;
