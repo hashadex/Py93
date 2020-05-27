@@ -3,10 +3,6 @@
 // _variableName <= this variable is unused
 // TODO: Improve code
 // TODO: Minify the code a little bit, but it should be readable
-// TODO: Use typeof "something" instead of typeof("something")
-
-// @todo Make helper.js JSHint-beautiful or very close to it
-// @body Add missing semicolons, get rid of "confusing use of !".
 
 /* jshint -W119 */
 /* jshint -W004 */
