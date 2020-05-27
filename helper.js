@@ -15,6 +15,49 @@ console.log('[Py93Helper] Started execution');
  */
 var $py93 = {};
 
+/**
+ * @description Py93's SDK
+ */
+$py93.sdk = {};
+
+/**
+ * @function
+ * Sends a GET XMLHttpRequest.
+ * @param {string} link The function will send a request to a string that is in link
+ * @param {function} callback A function that will be called on XHR load, accepts 2 parameters
+ * @param {boolean} async Should request be asynchronous, default is true
+ * 
+ * callback Parameters
+ * @param {boolean} succeed Indicate if request succeed
+ * @param {object} details An object with details about the request.
+ */
+$py93.sdk.checkLink = function(link, callback, async = true) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", link, async);
+    xhr.timeout = 30000;
+    xhr.onerror = function(e) {
+        callback(false, {
+            errorType: "error",
+            error: e
+        });
+    };
+    xhr.ontimeout = function() {
+        callback(false, {
+            errorType: "timeout"
+        });
+    };
+    xhr.onload = function() {
+        callback(true, {
+            contentType: xhr.getResponseHeader('Content-Type'),
+            status: xhr.status,
+            statusText: xhr.statusText,
+            resp: xhr.response,
+            xhr: xhr
+        });
+    };
+    xhr.send();
+};
+
 $py93.launchShell = function() {
     $fs.utils.getMenuOpenWith('/a/Py93/console.html')[0].action();
 };
