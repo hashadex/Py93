@@ -426,7 +426,7 @@ le._apps.py93 = {
                                                     })
                                                 }
                                             } else {
-                                                $log(checks)
+                                                //$log(checks)
                                                 //$log(checksNum)
                                                 $log.red('py93pm: error: not all checks of JSON package file were successful.\nLook for more info in the JavaScript console.')
                                                 console.error(new Error('Not all checks of JSON package file were successful.'))
