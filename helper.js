@@ -501,7 +501,7 @@ le._apps.py93 = {
                             if (pmDataJSON != undefined) {
                                 $log(`You have ${pmDataJSON.installed.length} packages installed.`)
                                 pmDataJSON.installed.forEach((package) => {
-                                    $log(`\nTitle: ${package.meta.title}\nVersion: ${package.meta.dispVer}`)
+                                    $log(`\nTitle: ${package.meta.title}\nVersion: ${/*package.meta.dispVer*/ (typeof package.meta.dispVer != "undefined") ? package.meta.dispVer : package.meta.compVer}`)
                                 })
                             }
                         } else if (typeof file == "object") {
@@ -713,7 +713,7 @@ le._apps.py93 = {
                                                                     $log.red(`py93pm: upgrade error: comparsion versions (compvers) in old package and package recieved from server are not same and compver from package recieved from server is not greater than compver from old package`)
                                                                 }
                                                             } else {
-                                                                $log(checks)
+                                                                //$log(checks)
                                                                 //$log(checksNum)
                                                                 $log.red('py93pm: error: not all checks of JSON package file were successful.\nLook for more info in the JavaScript console.')
                                                                 console.error(new Error('Not all checks of JSON package file were successful.'))
@@ -937,7 +937,7 @@ le._apps.py93 = {
                                                                         $log.red(`py93pm: upgrade error: comparsion versions (compvers) in old package and package recieved from server are not same and compver from package recieved from server is not greater than compver from old package`)
                                                                     }
                                                                 } else {
-                                                                    $log(checks)
+                                                                    // $log(checks)
                                                                     //$log(checksNum)
                                                                     $log.red('py93pm: error: not all checks of JSON package file were successful.\nLook for more info in the JavaScript console.')
                                                                     console.error(new Error('Not all checks of JSON package file were successful.'))
