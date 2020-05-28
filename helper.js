@@ -37,12 +37,14 @@ $py93.sdk.checkLink = function(link, callback, async = true) {
     xhr.timeout = 30000;
     xhr.onerror = function(e) {
         callback(false, {
-            errorType: "error"
+            errorType: "error",
+            xhr: xhr
         });
     };
     xhr.ontimeout = function() {
         callback(false, {
-            errorType: "timeout"
+            errorType: "timeout",
+            xhr: xhr
         });
     };
     xhr.onload = function() {
