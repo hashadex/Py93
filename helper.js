@@ -25,7 +25,7 @@ $py93.sdk = {};
  * Sends a GET XMLHttpRequest.
  * @param {string} link The function will send a request to a string that is in link
  * @param {function} callback A function that will be called on XHR load, accepts 2 parameters
- * @param {boolean} async Should request be asynchronous, default is true
+ * @param {boolean} [async=true] Should request be asynchronous, default is true
  * 
  * callback Parameters
  * @param {boolean} succeed Indicate if request succeed
@@ -56,6 +56,60 @@ $py93.sdk.checkLink = function(link, callback, async = true) {
         });
     };
     xhr.send();
+};
+
+/**
+ * @function
+ * @param {string|object} json A JSON string or object to validate
+ * @returns {object|undefined} Object if no errors happened, undefined if happened
+ */
+$py93.sdk.validatePackageJSON =  function(json) {
+    /**
+     * After validating, all booleans should be equal to true.
+     * This object contains 8 booleans for validating package JSON file.
+     */
+    var package = null;
+    var checks = {
+        versionExist: false, // True if "version" exist
+        versionIsNum: false, // True if "version" is a number
+        versionSupp: false, // True if package JSON file syntax (defined in "version") is supported by this version
+        metaExist: false, // True if "meta" exist and typeof is "object"
+        meta_titleExist: false, // True if "title" in "meta" exist
+        meta_compVerExist: false, // True if "compVer" in "meta" exist
+        installExist: false, // True if "install" exist and typeof is "object"
+        install_packageExist: false // True if "package" in "install" exist and typeof is "string"
+    };
+    if (typeof json == "string") {
+        try {
+            package = JSON.parse(json); 
+        } catch(e) {
+            console.error(new Error(e.stack));
+            return;
+        }
+    } else if (typeof json == "object") {
+        package = json;
+    } else {
+        console.error(new Error('Invalid json type'));
+        return;
+    }
+    if (typeof package.version != "undefined") checks.versionExist = true;
+    if (typeof package.version == "number") checks.versionIsNum = true;
+    if ($py93.pm.supportedVers.includes(package.version)) checks.versionSupp = true;
+    if (typeof package.meta != "undefined" && typeof package.meta == "object") {
+        checks.metaExist = true;
+        if (typeof package.meta.title != "undefined") checks.meta_titleExist = true;
+        if (typeof package.meta.compVer != "undefined") checks.meta_compVerExist = true;
+    }
+    if (typeof package.install == "object") {
+        checks.installExist = true;
+        if (typeof package.install.package != "undefined" || typeof package.install.package == "string") checks.install_packageExist = true;
+    }
+
+    if (Object.values(checks).every(Boolean)) {
+        return {valid: true, checks: checks};
+    } else {
+        return {valid: false, checks: checks};
+    }
 };
 
 $py93.launchShell = function() {
