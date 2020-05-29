@@ -188,15 +188,17 @@ le._apps.py93 = {
                     }
                 });
                 $fs.utils.getFileMenu('/a/Py93/packages').foldersList.forEach((name) => {
-                    $db.getRaw('Py93/packages/'+name, function(_a, file) {
-                        if (typeof file == 'string') {
-                            $py93.shellGate.pkgConts.push(file);
-                        } else if (typeof file == 'object') {
-                            file.text().then(function(filestr) {
-                                $py93.shellGate.pkgConts.push(filestr);
-                            });
-                        }
-                    });
+                    if (name.endsWith('.brython.js')) {
+                        $db.getRaw('Py93/packages/'+name, function(_a, file) {
+                            if (typeof file == 'string') {
+                                $py93.shellGate.pkgConts.push(file);
+                            } else if (typeof file == 'object') {
+                                file.text().then(function(filestr) {
+                                    $py93.shellGate.pkgConts.push(filestr);
+                                });
+                            }
+                        });
+                    }
                 });
                 setTimeout($py93.launchShell, 500);
             }
