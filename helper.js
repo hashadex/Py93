@@ -451,7 +451,7 @@ le._apps.py93 = {
                                                 try {
                                                     pmData = JSON.parse(file);
                                                 } catch(e) {
-                                                    $log.red('py93compile: compiler error: failed to parse data.json in /a/Py93/pm/. Packages installed via package manager would be not loaded.\nMore info in the JavaScript console.');
+                                                    $log.red(`py93pm: JSON error: failed to parse data.json in /a/Py93/pm/.\nError details:\n${e.stack}`);
                                                     console.error(new Error(`Failed to parse data.json.\n${e.stack}`));
                                                 }
                                                 if (pmData != null) {
@@ -481,6 +481,43 @@ le._apps.py93 = {
                                                         }
                                                     }
                                                 }
+                                            } else if (typeof file == "object") {
+                                                file.text().then(function(filestr) {
+                                                    var pmData = null;
+                                                    try {
+                                                        pmData = JSON.parse(filestr);
+                                                    } catch(e) {
+                                                        $log.red(`py93pm: JSON error: failed to parse data.json in /a/Py93/pm/.\nError details:\n${e.stack}`);
+                                                        console.error(new Error(`Failed to parse data.json.\n${e.stack}`));
+                                                    }
+                                                    if (pmData != null) {
+                                                        var found = false;
+                                                        pmData.installed.forEach((package) => {
+                                                            if (package.meta.title == respJSON.meta.title) {
+                                                                found = true;
+                                                            }
+                                                        });
+                                                        if (!found) {
+                                                            install();
+                                                        } else {
+                                                            if (reAdd) {
+                                                                pmData.installed = pmData.installed.filter((package, index) => {
+                                                                    if (package.meta.title == respJSON.meta.title) {
+                                                                        $log(`Removed package "${package.meta.title}", index ${index}`);
+                                                                        return false;
+                                                                    } else {
+                                                                        return true;
+                                                                    }
+                                                                });
+                                                                $db.set('Py93/pm/data.json', JSON.stringify(pmData));
+                                                                //console.log(pmData)
+                                                                setTimeout(install, 200);
+                                                            } else {
+                                                                $log.red(`py93pm: error: found package with title "${respJSON.meta.title}" installed.\nUse --readd or -r to overwrite installations of package "${respJSON.meta.title}".`);
+                                                            }
+                                                        }
+                                                    }
+                                                });
                                             }
                                         });
 
@@ -551,7 +588,7 @@ le._apps.py93 = {
                         }
                     };
                     xhr.send();
-                    $log('Sended the request, now awaiting response. This can take up to 30 seconds.');
+                    $log('Sent the request, now awaiting response. This can take up to 30 seconds.');
                 } else if (args[1] == "rem" || args[1] == "r") {
                     $db.getRaw('Py93/pm/data.json', function(_a, file) {
                         if (typeof file == "string") {
@@ -838,7 +875,7 @@ le._apps.py93 = {
                                             }
                                         };
                                         xhr.send();
-                                        $log('Sended the request, now awaiting response. This can take up to 30 seconds.');
+                                        $log('Sent the request, now awaiting response. This can take up to 30 seconds.');
                                     } else {
                                         $log.red(`py93pm: upgrade error: package "${args[2]}" can't be upgraded using upgrade: not found "self" of package "${args[2]}"`);
                                     }
@@ -1062,7 +1099,7 @@ le._apps.py93 = {
                                                 }
                                             };
                                             xhr.send();
-                                            $log('Sended the request, now awaiting response. This can take up to 30 seconds.');
+                                            $log('Sent the request, now awaiting response. This can take up to 30 seconds.');
                                         } else {
                                             $log.red(`py93pm: upgrade error: package "${args[2]}" can't be upgraded using upgrade: not found "self" of package "${args[2]}"`);
                                         }
