@@ -4,7 +4,9 @@ Py93 is a Python 3 compiler and shell (based on [Brython](https://brython.info))
 
 <!--- ![Experimental branch status](https://img.shields.io/badge/experimental_branch_status-active-informational) -->
 <!--- ![Experimental branch status](https://img.shields.io/badge/experimental_branch_status-testing-informational) -->
+<!---
 ![Experimental branch status](https://img.shields.io/badge/experimental_branch_status-getting_ready_to_merge-brightgreen)
+-->
 
 ![License: MPL-2.0](https://img.shields.io/badge/license-MPL--2.0-informational)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/hasha2982/Py93?label=latest%20release)
@@ -19,7 +21,9 @@ Py93 is a Python 3 compiler and shell (based on [Brython](https://brython.info))
 To install Py93 to your Windows 93 computer, just create `Py93` folder in `/a/`, then paste this repository to `Py93` folder. See `installguide.md` for more detailed guide.
 -->
 
+<!---
 > **Warning:** This branch is experimental and things may work not as they should work.
+-->
 
 ## Quick-start guide
 
