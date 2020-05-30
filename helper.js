@@ -35,7 +35,7 @@ $py93.sdk.checkLink = function(link, callback, async = true) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", link, async);
     xhr.timeout = 30000;
-    xhr.onerror = function(e) {
+    xhr.onerror = function() {
         callback(false, {
             errorType: "error",
             xhr: xhr
