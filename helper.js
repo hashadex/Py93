@@ -405,7 +405,8 @@ le._apps.py93 = {
                     };
                     var install = function(checks, respJSON) {
                         //console.log(pmData)
-                        if (Object.values(checks).every(Boolean)) {
+                        //if (Object.values(checks).every(Boolean)) {
+                        if ($py93.sdk.validatePackageJSON(respJSON)) {
                             $log(`Package "${respJSON.meta.title}"\n===========================================================`);
                             $log(`Title: ${respJSON.meta.title}`);
                             if (typeof respJSON.meta.author != "undefined") $log(`Author: ${respJSON.meta.author}`);
@@ -475,6 +476,7 @@ le._apps.py93 = {
                                      * This object contains 8 booleans for validating package JSON file.
                                      * After validating, all booleans should be equal to true.
                                      */
+                                    /*
                                     var checks = {
                                         versionExist: false, // True if "version" exist
                                         versionIsNum: false, // True if "version" is a number
@@ -486,7 +488,9 @@ le._apps.py93 = {
                                         install_packageExist: false // True if "package" in "install" exist and typeof is "string"
                                     };
                                     // Validating JSON
+                                    */
                                     if (typeof respJSON == "object") { // just double-checked to make absolutely sure, this if statement may be removed in future
+                                        /*
                                         if (typeof respJSON.version != "undefined") checks.versionExist = true;
                                         if (typeof respJSON.version == "number") checks.versionIsNum = true;
                                         if ($py93.pm.supportedVers.includes(respJSON.version)) checks.versionSupp = true;
@@ -499,7 +503,7 @@ le._apps.py93 = {
                                             checks.installExist = true;
                                             if (typeof respJSON.install.package != "undefined" || typeof respJSON.install.package == "string") checks.install_packageExist = true;
                                         }
-
+                                        */
                                         $db.getRaw('Py93/pm/data.json', function(_a, file) {
                                             if (typeof file == "string") {
                                                 var pmData = null;
