@@ -4,6 +4,7 @@ assets/*.png
 brython/*
 releases/*
 table/*
+.github/*
 releases.json
 install.html
 example.json
