@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython_stdlib.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.9/brython.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.9/brython_stdlib.min.js"></script>
         <script>
             if (window.location !== window.parent.location) {
                 if (window.parent.location.host == 'www.windows93.net') {
                     var gate = window.parent.$py93.shellGate
                     if (!gate.ignore) {
+                        gate.pmPkgUrls.forEach((url) => {
+                            var elem = document.createElement('script')
+                            elem.src = url;
+                            elem.id = 'pm-js';
+                            document.head.append(elem);
+                            console.log(`Loaded Package manager's package with URL ${url}`);
+                        })
                         gate.pkgConts.forEach((cont) => {
                             if (typeof(cont) != "object") {
                                 const _b = new Function(cont)();
