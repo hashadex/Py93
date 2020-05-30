@@ -373,7 +373,7 @@ le._apps.py93 = {
                 }
             }
         } else if (args[0] == "pm") {
-            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL or a URL] [rem NAME or r NAME] [u NAME or upgrade NAME] [info NAME or i NAME] [list]\n===========================================================\nhelp or h - print this help message\nadd URL, a URL - install a package, URL is a link to JSON package file that you want to install\nrem NAME, r NAME - remove an installed package, NAME is name of the package that you want to remove\nlist, l - output a list of packages that you have installed\nu NAME, upgrade NAME - try to upgrade a package, NAME is the name of package you want to upgrade\ninfo NAME, i NAME - get info about installed package which name is NAME.\nExample: py93 pm i py93-packagetest => print info about installed package "py93-packagetest"';
+            var help = 'py93pm: usage:\npy93 pm [help or h] [add URL or a URL] [rem NAME or r NAME] [u NAME or upgrade NAME] [info NAME or i NAME] [list or l]\n===========================================================\nhelp or h - print this help message\nadd URL, a URL - install a package, URL is a link to JSON package file that you want to install\nrem NAME, r NAME - remove an installed package, NAME is name of the package that you want to remove\nlist, l - output a list of packages that you have installed\nu NAME, upgrade NAME - try to upgrade a package, NAME is the name of package you want to upgrade\ninfo NAME, i NAME - get info about installed package which name is NAME.\nExample: py93 pm i py93-packagetest => print info about installed package "py93-packagetest"';
             if (
                 this.arg.command == "py93 pm" ||
                 this.arg.command == "py93 pm " ||
