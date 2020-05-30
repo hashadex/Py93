@@ -403,7 +403,7 @@ le._apps.py93 = {
                         $log.red('py93pm: request error: request failed, look for more info in the JavaScript console.');
                         console.error(new Error(`Request failed.\n${e}`));
                     };
-                    xhr.onload = function() {
+                    var onload = function() {
                         console.log(`py93pm: onload: ${xhr.status}, ${xhr.statusText}`);
                         if (xhr.status <= 299 && xhr.status >= 200) {
                             if (xhr.getResponseHeader("Content-Type").startsWith('application/json')) {
@@ -587,6 +587,7 @@ le._apps.py93 = {
                             $log.red(`py93pm: HTTP error: ${xhr.status} ${xhr.statusText}`);
                         }
                     };
+                    xhr.onload = onload;
                     xhr.send();
                     $log('Sent the request, now awaiting response. This can take up to 30 seconds.');
                 } else if (args[1] == "rem" || args[1] == "r") {
@@ -705,7 +706,7 @@ le._apps.py93 = {
                                             $log.red('py93pm: request error: request failed, look for more info in the JavaScript console.');
                                             console.error(new Error(`Request failed.\n${e}`));
                                         };
-                                        xhr.onload = function() {
+                                        var onload = function() {
                                             console.log(`py93pm: onload: ${xhr.status}, ${xhr.statusText}`);
                                             if (xhr.status <= 299 && xhr.status >= 200) {
                                                 if (xhr.getResponseHeader("Content-Type").startsWith('application/json')) {
@@ -874,6 +875,7 @@ le._apps.py93 = {
                                                 $log.red(`py93pm: HTTP error: ${xhr.status} ${xhr.statusText}`);
                                             }
                                         };
+                                        xhr.onload = onload;
                                         xhr.send();
                                         $log('Sent the request, now awaiting response. This can take up to 30 seconds.');
                                     } else {
@@ -929,7 +931,7 @@ le._apps.py93 = {
                                                 $log.red('py93pm: request error: request failed, look for more info in the JavaScript console.');
                                                 console.error(new Error(`Request failed.\n${e}`));
                                             };
-                                            xhr.onload = function() {
+                                            var onload = function() {
                                                 console.log(`py93pm: onload: ${xhr.status}, ${xhr.statusText}`);
                                                 if (xhr.status <= 299 && xhr.status >= 200) {
                                                     if (xhr.getResponseHeader("Content-Type").startsWith('application/json')) {
@@ -1098,6 +1100,7 @@ le._apps.py93 = {
                                                     $log.red(`py93pm: HTTP error: ${xhr.status} ${xhr.statusText}`);
                                                 }
                                             };
+                                            xhr.onload = onload;
                                             xhr.send();
                                             $log('Sent the request, now awaiting response. This can take up to 30 seconds.');
                                         } else {
