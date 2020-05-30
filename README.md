@@ -57,7 +57,11 @@ py93 help
 
 > You can also use `py93 h` instead of `py93 help`.
 
-* * *
+## Developers
+
+*You are a developer?* You can make your Brython package installable via Py93 package manager. Check out [a tutorial](https://github.com/hasha2982/Py93/wiki/Creating-your-first-Py93-package) about how to do it.
+
+Py93 also has a SDK, you can find documentation about it [here](https://github.com/hasha2982/Py93/wiki/SDK).
 
 <!---
 ## CLI commands
