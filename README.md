@@ -1,3 +1,6 @@
+> [!WARNING]
+> This project is no longer maintained and the code quality is no longer up to my standards.
+
 # Py93
 
 Py93 is a Python 3 compiler and shell (based on [Brython](https://brython.info)) for [Windows 93](https://windows93.net/).
